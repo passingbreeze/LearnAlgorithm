@@ -1,2 +1,5 @@
 # LearnAlgorithm
-For practice and learn programming
+
+Hi! I've just began to study algorithm, data structure and artificial intelligence.
+
+Please help me to learn them!
