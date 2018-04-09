@@ -8,13 +8,14 @@ class nMatrix {
 public:
 	nMatrix(int n, int x) {
 		int r, c;
+		size = n;
 
-		int values = new int*[n];
-		for (int i = 0; i < n; ++i)
-			values*[i] = new int**[n];
+		values = new int*[size];
+		for (int i = 0; i < size; ++i)
+			values[i] = new int[size];
 
-		for (r = 0; r < n; ++r) {
-			for (c = 0; c < n; ++c)
+		for (r = 0; r < size; ++r) {
+			for (c = 0; c < size; ++c)
 				values[r][c] = x;
 		}
 
@@ -30,31 +31,24 @@ public:
 		size = m.size;
 	}
 
-	nMatrix operator+(const nMatrix& a, const nMatrix& b) {
+	nMatrix& operator+(const nMatrix& m) {
 		int r, c;
-		nMatrix result(a.size, 0);
 
-		if (a.size != b.size) {
-			cerr << "not matching matrix size." << endl;
-			return result;
-		}
-
-		for (r = 0; r < a.size; ++r) {
-			for (c = 0; c < a.size; ++c) {
-				result.values[r][c] = a.values[r][c] + b.values[r][c];
+		for (r = 0; r < (*this).size; ++r) {
+			for (c = 0; c < (*this).size; ++c) {
+				(*this).values[r][c] += m.values[r][c];
 			}
 		}
 
-		return result;
+		return *this;
 	}
 
 	friend ostream& operator<< (ostream& os, const nMatrix& m) {
 		for (int i = 0; i < m.size; ++i) {
-			for (int j = 0; j < m.size; ++j) {
-				os << m.values[i][j] << " " << endl;
-			}
+			for (int j = 0; j < m.size; ++j)
+				os << m.values[i][j] << " ";
+			os << endl;
 		}
-
 		return os;
 	}
 
@@ -62,10 +56,14 @@ public:
 
 int main(int argc, char const *argv[])
 {
-	nMatrix a(3, 0), b(3, 1), c(a);
+	nMatrix a(3, 1), b(3, 1), c(a);
+
+	cout << a ;
+	cout << b ;
 
 	c = a + b;
+	//c = a.operator+(b)
 
-	cout << c << endl;
+	cout << c ;
 	return 0;
 }
