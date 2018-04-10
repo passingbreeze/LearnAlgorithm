@@ -9,6 +9,7 @@ public:
 	nMatrix(int n, int x) {
 		int r, c;
 		size = n;
+		values = NULL;
 
 		values = new int*[size];
 		for (int i = 0; i < size; ++i)
@@ -22,21 +23,34 @@ public:
 	}
 
 	~nMatrix() {
-		if (values != NULL)
-			delete[] values;
+		if (values != NULL) {
+			for (int i = 0; i < size; ++i)
+				delete[] values[i];
+		}
 	}
 
 	nMatrix(const nMatrix& m) {
-		values = m.values;
 		size = m.size;
+		values = new int*[size];
+		for (int i = 0; i < size; ++i)
+			values[i] = new int[size];
+
+		for (int i = 0; i < size; ++i) {
+			for (int j = 0; j < size; ++j) {
+				values[i][j] = m.values[i][j];
+			}
+		}
+
+		// shallow copy == 주소값만 복사
+		// deep copy == 새로 공간을 하나 만들어서 통째로 복사
 	}
 
 	nMatrix& operator+(const nMatrix& m) {
-		int r, c;
+		int i, j;
 
-		for (r = 0; r < (*this).size; ++r) {
-			for (c = 0; c < (*this).size; ++c) {
-				(*this).values[r][c] += m.values[r][c];
+		for (i = 0; i < size; ++i) {
+			for (j = 0; j < size; ++j) {
+				values[i][j] += m.values[i][j];
 			}
 		}
 
@@ -59,11 +73,19 @@ int main(int argc, char const *argv[])
 	nMatrix a(3, 1), b(3, 1), c(a);
 
 	cout << a ;
+	cout << endl;
+
 	cout << b ;
+	cout << endl;
+
+	cout << c ;
+	cout << endl;
 
 	c = a + b;
+	// cout << a + b;
 	//c = a.operator+(b)
 
 	cout << c ;
+	cout << endl;
 	return 0;
 }
