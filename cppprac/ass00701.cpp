@@ -53,14 +53,34 @@ public:
 	}
 
 	nMatrix addnMatrix(const nMatrix a, const nMatrix b) {
+		nMatrix result(size, 0);
+
 		if (a.size != b.size) {
 			cout << "should match size of matrices." << endl;
-			return *this;
+			return result;
 		}
 		for (int i = 0; i < size; ++i)
 			for (int j = 0; j < size; ++j)
-				values[i][j] = a.values[i][j] + b.values[i][j];
+				result.values[i][j] = a.values[i][j] + b.values[i][j];
+
+		return result;
+	}
+
+	nMatrix& operator=(const nMatrix& m) {
+		size = m.size;
+
+		values = new int*[size];
+		for (int i = 0; i < size; ++i)
+			values[i] = new int[size];
+
+		for (int i = 0; i < size; ++i) {
+			for (int j = 0; j < size; ++j) {
+				values[i][j] = m.values[i][j];
+			}
+		}
+
 		return *this;
+
 	}
 
 	friend ostream& operator<< (ostream& os, const nMatrix& m) {
@@ -84,7 +104,7 @@ int main(int argc, char const *argv[])
 
 	cout << c << endl;
 
-	c.addnMatrix(a, b);
+	c = c.addnMatrix(a, b);
 
 	cout << c << endl;
 	return 0;
