@@ -23,7 +23,9 @@ public:
 	}
 
 	~nMatrix() {
+		// check when destuctor will be called
 		cout << "after dead" << endl;
+
 		if (values != NULL) {
 			for (int i = 0; i < size; ++i)
 				delete[] values[i];
@@ -35,6 +37,7 @@ public:
 
 	nMatrix(const nMatrix& m) {
 		size = m.size;
+
 		values = new int*[size];
 		for (int i = 0; i < size; ++i)
 			values[i] = new int[size];
@@ -55,13 +58,26 @@ public:
 		size = result.size;
 
 		for (i = 0; i < size; ++i)
-			for (j = 0; j < size; ++j) {
+			for (j = 0; j < size; ++j)
 				result.values[i][j] = values[i][j] + m.values[i][j];
-				cout << result.values[i][j];
-			}
+
 		cout << endl;
 
 		return result;
+	}
+
+	nMatrix& operator=(const nMatrix& m) {
+		size = m.size;
+
+		values = new int*[size];
+		for (int i = 0; i < size; ++i)
+			values[i] = new int[size];
+
+		for (int i = 0; i < size; ++i)
+			for (int j = 0; j < size; ++j)
+				values[i][j] = m.values[i][j];
+
+		return *this;
 	}
 
 	friend ostream& operator<< (ostream& os, const nMatrix& m) {
@@ -80,9 +96,7 @@ int main(int argc, char const *argv[])
 	nMatrix a(3, 1), b(3, 1), c(a);
 
 	cout << a << endl;
-
 	cout << b << endl;
-
 	cout << c << endl;
 
 	// for debug
@@ -90,7 +104,7 @@ int main(int argc, char const *argv[])
 	// cout << c << endl;
 
 	c = a + b;
-	//c = a.operator+(b)
+	//c.operator=(a.operator+(b))
 
 	cout << c << endl;
 	return 0;
