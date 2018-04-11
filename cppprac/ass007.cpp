@@ -23,9 +23,13 @@ public:
 	}
 
 	~nMatrix() {
+		cout << "after dead" << endl;
 		if (values != NULL) {
 			for (int i = 0; i < size; ++i)
 				delete[] values[i];
+			delete[] values;
+
+			values = NULL;
 		}
 	}
 
@@ -45,16 +49,19 @@ public:
 		// deep copy == 새로 공간을 하나 만들어서 통째로 복사
 	}
 
-	nMatrix& operator+(const nMatrix& m) {
+	nMatrix operator+(const nMatrix& m) {
 		int i, j;
+		nMatrix result(*this);
+		size = result.size;
 
-		for (i = 0; i < size; ++i) {
+		for (i = 0; i < size; ++i)
 			for (j = 0; j < size; ++j) {
-				values[i][j] += m.values[i][j];
+				result.values[i][j] = values[i][j] + m.values[i][j];
+				cout << result.values[i][j];
 			}
-		}
+		cout << endl;
 
-		return *this;
+		return result;
 	}
 
 	friend ostream& operator<< (ostream& os, const nMatrix& m) {
@@ -72,20 +79,19 @@ int main(int argc, char const *argv[])
 {
 	nMatrix a(3, 1), b(3, 1), c(a);
 
-	cout << a ;
-	cout << endl;
+	cout << a << endl;
 
-	cout << b ;
-	cout << endl;
+	cout << b << endl;
 
-	cout << c ;
-	cout << endl;
+	cout << c << endl;
+
+	// for debug
+	// c = b;
+	// cout << c << endl;
 
 	c = a + b;
-	// cout << a + b;
 	//c = a.operator+(b)
 
-	cout << c ;
-	cout << endl;
+	cout << c << endl;
 	return 0;
 }
