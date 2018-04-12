@@ -6,24 +6,39 @@ class nMatrix {
 	int** values;
 	int size;
 public:
+	nMatrix() {
+		size = 100;
+		values = new int*[size];
+		for (int i = 0; i < size; ++i)
+			values[i] = new int[size];
+
+		for (int r = 0; r < size; ++r) {
+			for (int c = 0; c < size; ++c) {
+				values[r][c] = 0;
+			}
+		}
+	}
+
 	nMatrix(int n, int x) {
-		int r, c;
 		size = n;
 
 		values = new int*[size];
 		for (int i = 0; i < size; ++i)
 			values[i] = new int[size];
 
-		for (r = 0; r < size; ++r) {
-			for (c = 0; c < size; ++c)
+		for (int r = 0; r < size; ++r) {
+			for (int c = 0; c < size; ++c)
 				values[r][c] = x;
 		}
 
 	}
 
 	~nMatrix() {
-		if (values != NULL)
-			delete values;
+		if (values != NULL) {
+			for (int i = 0; i < size; ++i)
+				delete[] values[i];
+			delete[] values;
+		}
 	}
 
 	nMatrix(const nMatrix& m) {
@@ -44,14 +59,15 @@ public:
 
 	nMatrix operator+(const nMatrix& m) {
 		int i, j;
+		nMatrix result(*this);
 
-		for (i = 0; i < size; ++i) {
-			for (j = 0; j < size; ++j) {
-				(this->values)[i][j] += m.values[i][j];
+		for (i = 0; i < m.size; ++i) {
+			for (j = 0; j < m.size; ++j) {
+				result.values[i][j] = values[i][j] + m.values[i][j];
 			}
 		}
 
-		return *this;
+		return result;
 	}
 
 	friend ostream& operator<< (ostream& os, const nMatrix& m) {

@@ -18,12 +18,16 @@ public:
 			for (c = 0; c < size; ++c)
 				values[r][c] = x;
 		}
-
 	}
 
 	~nMatrix() {
-		if (values != NULL)
+		// cout << size << endl;
+		// cout << values << endl;
+		if (values != NULL) {
+			for (int i = 0; i < size; ++i)
+				delete[] values[i];
 			delete[] values;
+		}
 	}
 
 	nMatrix(const nMatrix& m) {
@@ -34,9 +38,9 @@ public:
 	nMatrix& operator+(const nMatrix& m) {
 		int r, c;
 
-		for (r = 0; r < (*this).size; ++r) {
-			for (c = 0; c < (*this).size; ++c) {
-				(*this).values[r][c] += m.values[r][c];
+		for (r = 0; r < size; ++r) {
+			for (c = 0; c < size; ++c) {
+				values[r][c] += m.values[r][c];
 			}
 		}
 
@@ -56,14 +60,14 @@ public:
 
 int main(int argc, char const *argv[])
 {
-	nMatrix a(3, 1), b(3, 1), c(a);
+	nMatrix a(3, 1), b(3, 1);
 
-	cout << a ;
-	cout << b ;
+	cout << a << endl;
+	cout << b << endl;
 
-	c = a + b;
+	// c = a + b;
 	//c = a.operator+(b)
 
-	cout << c ;
+	// cout << c ;
 	return 0;
 }
