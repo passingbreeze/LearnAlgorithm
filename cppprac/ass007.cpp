@@ -23,15 +23,10 @@ public:
 	}
 
 	~nMatrix() {
-		// check when destuctor will be called
-		cout << "after dead" << endl;
-
 		if (values != NULL) {
 			for (int i = 0; i < size; ++i)
 				delete[] values[i];
 			delete[] values;
-
-			values = NULL;
 		}
 	}
 
@@ -98,10 +93,6 @@ int main(int argc, char const *argv[])
 	cout << a << endl;
 	cout << b << endl;
 	cout << c << endl;
-
-	// for debug
-	// c = b;
-	// cout << c << endl;
 
 	c = a + b;
 	//c.operator=(a.operator+(b))
