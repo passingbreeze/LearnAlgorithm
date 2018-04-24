@@ -20,6 +20,7 @@ public:
       dollars++;
     }
   }
+  operator EUR();
 
   friend USD operator+(const USD& a, const USD& b) {
 
@@ -54,11 +55,10 @@ public:
       euros++;
     }
   }
-  EUR(const USD e) {
 
-  }
+  operator USD();
 
-  friend EUR operator+(EUR& a, EUR& b) {
+  friend EUR operator+(const EUR& a, const EUR& b) {
     EUR result;
 
     result.euros = a.euros + b.euros;
@@ -73,17 +73,17 @@ public:
   }
 };
 
-USD::operator EUR()
+USD::operator EUR() // USD -> EUR
 {
   int conv_e = (int)((100 / 81) * dollars);
   float conv_ec = (float)((100 / 81) * cents);
   return EUR(conv_e, conv_ec);
 }
 
-EUR::operator USD()
+EUR::operator USD() // EUR -> USD
 {
   int conv_d = (int)((0.81) * euros);
-  float conv_dc = (float)(0.81 * cents);
+  float conv_dc = (float)((0.81) * cents);
   return USD(conv_d, conv_dc);
 }
 
@@ -92,8 +92,8 @@ int main()
   EUR  myMoneyEuro;
   USD  myMoneyUSD;
 
-  myMoneyUSD = EUR(10, 20.0) + USD(20, 20.0);
-  myMoneyEuro = USD(100, 30.0) + EUR(300, 20.0);
+  myMoneyUSD = USD(EUR(10, 20.0)) + USD(20, 20.0);
+  myMoneyEuro = EUR(USD(100, 30.0)) + EUR(300, 20.0);
 
   cout << myMoneyUSD << endl;
   cout << myMoneyEuro << endl;
