@@ -2,6 +2,7 @@
 
 using namespace std;
 
+class EUR;
 class USD {
   int dollars;
   float cents; // 0.0<=cent<100
@@ -20,6 +21,7 @@ public:
     }
   }
 
+  operator EUR();
 
   friend USD operator+(const USD& a, const USD& b) {
 
@@ -32,7 +34,7 @@ public:
   }
 
   friend ostream& operator<<(ostream& os, const USD& a) {
-    os << a.dollars << ' ' << a.cents << endl;
+    os << "USD : " << a.dollars + (float)(a.cents / 100.0);
     return os;
   }
 };
@@ -55,11 +57,9 @@ public:
     }
   }
 
-  operator USD() const {
-    return USD();
-  }
+  operator USD();
 
-  friend EUR operator+(const EUR& a, const EUR& b) {
+  friend EUR operator+(EUR& a, EUR& b) {
     EUR result;
 
     result.euros = a.euros + b.euros;
@@ -69,12 +69,24 @@ public:
   }
 
   friend ostream& operator<<(ostream& os, const EUR& a) {
-    os << a.euros << ' ' << a.cents << endl;
+    os << "EUR : " << a.euros + (float)(a.cents / 100.0);
     return os;
   }
 };
 
+USD::operator EUR()
+{
+  int conv_e = (int)((100 / 81) * dollars);
+  float conv_ec = (float)((100 / 81) * cents);
+  return EUR(conv_e, conv_ec);
+}
 
+EUR::operator USD()
+{
+  int conv_d = (int)((0.81) * euros);
+  float conv_dc = (float)(0.81 * cents);
+  return USD(conv_d, conv_dc);
+}
 
 int main()
 {
@@ -86,4 +98,5 @@ int main()
 
   cout << myMoneyUSD << endl;
   cout << myMoneyEuro << endl;
+  return 0;
 }
