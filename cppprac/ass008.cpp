@@ -20,10 +20,15 @@ public:
       dollars++;
     }
   }
+  USD(const class EUR&) { }
 
+<<<<<<< HEAD
   operator EUR();
 
   friend USD operator+(const USD& a, const USD& b) {
+=======
+  friend USD operator+ (const USD& a, const USD& b) {
+>>>>>>> 672fcb22499d14012fd8887e959c2badb65f3aa0
 
     USD result;
 
@@ -34,7 +39,11 @@ public:
   }
 
   friend ostream& operator<<(ostream& os, const USD& a) {
+<<<<<<< HEAD
     os << "USD : " << a.dollars + (float)(a.cents / 100.0);
+=======
+    os << "USD : " << a.dollars << ' ' << a.cents << endl;
+>>>>>>> 672fcb22499d14012fd8887e959c2badb65f3aa0
     return os;
   }
 };
@@ -42,10 +51,13 @@ public:
 class EUR {
   int euros;
   float cents; // 0.0<=cent<100
-
 public:
   EUR() : euros(0), cents(0.0) {}
-  EUR(int _d, float _c) : euros(_d), cents(_c) {
+  EUR(const EUR& e) {
+    euros = e.euros;
+    cents = e.cents;
+  }
+  EUR(int _e, float _c): euros(_e), cents(_c) {
     if (_c < 0.0) {
       cout << "So much less cents." << endl;
       cents = 0.0;
@@ -55,10 +67,16 @@ public:
       cout << "So much cents." << endl;
       euros++;
     }
-  }
 
+<<<<<<< HEAD
   operator USD();
 
+=======
+  }
+
+  EUR(const class USD&) {}
+
+>>>>>>> 672fcb22499d14012fd8887e959c2badb65f3aa0
   friend EUR operator+(EUR& a, EUR& b) {
     EUR result;
 
@@ -68,12 +86,18 @@ public:
     return result;
   }
 
+<<<<<<< HEAD
   friend ostream& operator<<(ostream& os, const EUR& a) {
     os << "EUR : " << a.euros + (float)(a.cents / 100.0);
+=======
+  friend ostream& operator<<(ostream& os, EUR& a) {
+    os << "EUR : " << a.euros << ' ' << a.cents << endl;
+>>>>>>> 672fcb22499d14012fd8887e959c2badb65f3aa0
     return os;
   }
 };
 
+<<<<<<< HEAD
 USD::operator EUR()
 {
   int conv_e = (int)((100 / 81) * dollars);
@@ -88,10 +112,12 @@ EUR::operator USD()
   return USD(conv_d, conv_dc);
 }
 
+=======
+>>>>>>> 672fcb22499d14012fd8887e959c2badb65f3aa0
 int main()
 {
-  EUR  myMoneyEuro;
-  USD  myMoneyUSD;
+  EUR myMoneyEuro;
+  USD myMoneyUSD;
 
   myMoneyUSD = EUR(10, 20.0) + USD(20, 20.0);
   myMoneyEuro = USD(100, 30.0) + EUR(300, 20.0);
