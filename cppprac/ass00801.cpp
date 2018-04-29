@@ -2,7 +2,6 @@
 
 using namespace std;
 
-class EUR;
 class USD {
   int dollars;
   float cents; // 0.0<=cent<100
@@ -20,7 +19,26 @@ public:
       dollars++;
     }
   }
-  operator EUR();
+  USD(const class EUR&) {}
+
+  USD& operator=(const EUR& e) { // EUR + USD
+    float money = (e.geteuros()) * (float)100.0 / (float)81.0;
+    dollars = static_cast<int>(money);
+    cents = e.geteurcents() * (float)100.0 / (float)81.0 + (money - dollars) * 100;
+    while (cents >= 100.0) {
+      cents -= 100.0;
+      dollars += 1;
+    }
+    return *this;
+  }
+
+  int getdollars() const {
+    return dollars;
+  }
+
+  float getusdcents() const {
+    return cents;
+  }
 
   friend USD operator+(const USD& a, const USD& b) {
 
@@ -56,7 +74,13 @@ public:
     }
   }
 
-  operator USD();
+  int geteuros() const {
+    return euros;
+  }
+
+  float geteurcents() const {
+    return cents;
+  }
 
   friend EUR operator+(const EUR& a, const EUR& b) {
     EUR result;
@@ -73,27 +97,14 @@ public:
   }
 };
 
-USD::operator EUR() // USD -> EUR
-{
-  int conv_e = (int)((100 / 81) * dollars);
-  float conv_ec = (float)((100 / 81) * cents);
-  return EUR(conv_e, conv_ec);
-}
-
-EUR::operator USD() // EUR -> USD
-{
-  int conv_d = (int)((0.81) * euros);
-  float conv_dc = (float)((0.81) * cents);
-  return USD(conv_d, conv_dc);
-}
 
 int main()
 {
   EUR  myMoneyEuro;
   USD  myMoneyUSD;
 
-  myMoneyUSD = USD(EUR(10, 20.0)) + USD(20, 20.0);
-  myMoneyEuro = EUR(USD(100, 30.0)) + EUR(300, 20.0);
+  myMoneyUSD = EUR(10, 20.0) + USD(20, 20.0);
+  myMoneyEuro = USD(100, 30.0) + EUR(300, 20.0);
 
   cout << myMoneyUSD << endl;
   cout << myMoneyEuro << endl;
