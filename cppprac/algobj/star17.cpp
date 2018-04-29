@@ -1,48 +1,44 @@
-#include <iostream>
-
-using namespace std;
+#include <cstdio>
 
 class star {
 	int size = 0;
 public:
 	star(int _s): size(_s) {}
 	void maketree() const {
-		int n1, n2, i, j, k;
+		int n1, n2, i;
 
 		for (i = 0; i < size - 1; ++i) {
-			n1 = size - i;
-			n2 = i;
-			if (size >= 2) {
-				for (j = 0; j < n1; ++j) {
-					cout << " ";
-					if (j == n1 - 1) cout << "* ";
+			n1 = size - 1 - i;
+			n2 = 2 * i - 1;
+
+			if (size > 1) {
+				for (int j = 0; j < n1; ++j) {
+					printf(" ");
+					if (j == n1 - 1) printf("* ");
 				}
-				for (k = 0; k < n2; ++k) {
-					cout << " ";
-					if (k == n2 - 1) cout << "* ";
+
+				for (int l = 0; l < n2; ++l) {
+					if (l < n2 - 1) printf(" ");
+					else printf("* ");
 				}
-				cout << "\n";
-				if (i == size - 1) {//마지막 행
-					for (int l = 0; l < 2 * i + 1; ++l)
-						cout << "*";
-				}
+				printf("\n");
 			}
 		}
 
-		if (i == size - 1) {//마지막 행
+		if (i == size - 1) {
 			for (int l = 0; l < 2 * i + 1; ++l)
-				cout << "*";
+				printf("*");
+			printf("\n");
 		}
-		cout << "\n";
+
 	}
 
 };
 
 int main()
 {
-	ios::sync_with_stdio(false);
 	int n = 0;
-	cin >> n;
+	scanf("%d", &n);
 	star a(n);
 	a.maketree();
 	return 0;
