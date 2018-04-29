@@ -3,17 +3,19 @@
 using namespace std;
 
 class star {
-	int n[100];
+	int size = 0;
 public:
-	star(int _n) {
-		for (int i = 0; i < _n; ++i)
-			n[i] = i + 1;
-
-	}
+	star(int _n): size(_n) {}
 	void makestar() const {
-		for (int i = 0; i < n; ++i)
-			cout << "* ";
-		cout << "\n";
+		int n1, n2;
+
+		for (int i = 0; i < size; ++i) {
+			n1 = size - 1 - i;
+			n2 = i + 1;
+			for (int j = 0; j < n1; ++j) cout << " ";
+			for (int k = 0; k < n2; ++k) cout << "* ";
+			cout << "\n";
+		}
 	}
 
 };

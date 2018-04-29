@@ -1,49 +1,59 @@
 #include <iostream>
+#include <cmath>
 
 using namespace std;
 
-class EUR;
+class EUR;//필수 선언
 class USD {
   int dollars;
   float cents; // 0.0<=cent<100
-
 public:
   USD() : dollars(0), cents(0.0) {}
   USD(int _d, float _c) : dollars(_d), cents(_c) {
     if (_c < 0.0) {
-      cout << "So much less cents." << endl;
-      cents = 0.0;
+      cerr << "So much less cents.\n";
     }
 
     else if (_c > 100.0) {
-      cout << "So much cents." << endl;
-      dollars++;
+      cerr << "So much cents.\n";
     }
   }
-  USD(const class EUR&) { }
 
-<<<<<<< HEAD
-  operator EUR();
+  int getdollars() const {
+    return dollars;
+  }
+
+  float getusdcents() const {
+    return cents;
+  }
+
+  USD& operator=(const EUR&);
 
   friend USD operator+(const USD& a, const USD& b) {
-=======
-  friend USD operator+ (const USD& a, const USD& b) {
->>>>>>> 672fcb22499d14012fd8887e959c2badb65f3aa0
+    USD sum;
 
-    USD result;
+    sum.dollars = a.dollars + b.dollars;
+    sum.cents = a.cents + b.cents;
 
-    result.dollars = a.dollars + b.dollars;
-    result.cents = a.cents + b.cents;
+    return sum;
+  }
 
-    return result;
+  friend USD operator-(const USD& a, const USD& b) {
+    USD sub;
+
+    sub.dollars = a.dollars - b.dollars;
+    sub.cents = a.cents - b.cents;
+
+    if (sub.dollars < 0 || sub.cents < 0.0) {
+      sub.dollars = -(sub.dollars);
+      sub.cents = -(sub.cents);
+    }
+
+    return sub;
   }
 
   friend ostream& operator<<(ostream& os, const USD& a) {
-<<<<<<< HEAD
-    os << "USD : " << a.dollars + (float)(a.cents / 100.0);
-=======
-    os << "USD : " << a.dollars << ' ' << a.cents << endl;
->>>>>>> 672fcb22499d14012fd8887e959c2badb65f3aa0
+    os << "USD : " << a.dollars + a.cents;
     return os;
   }
 };
@@ -53,74 +63,89 @@ class EUR {
   float cents; // 0.0<=cent<100
 public:
   EUR() : euros(0), cents(0.0) {}
-  EUR(const EUR& e) {
-    euros = e.euros;
-    cents = e.cents;
-  }
-  EUR(int _e, float _c): euros(_e), cents(_c) {
+  EUR(int _d, float _c) : euros(_d), cents(_c) {
     if (_c < 0.0) {
-      cout << "So much less cents." << endl;
-      cents = 0.0;
+      cerr << "So much less cents.\n";
     }
 
     else if (_c > 100.0) {
-      cout << "So much cents." << endl;
-      euros++;
+      cerr << "So much cents.\n";
+    }
+  }
+  EUR(const USD& u) {
+    float fleuros = 0.0;
+    float subeurcents = 0.0;
+
+    euros = (100.0 / 81.0) * u.getdollars();
+    fleuros = ((100.0 / 81.0) * u.getdollars());
+    subeurcents = fleuros - (float)euros;
+    cents = (100.0 / 81.0) * u.getusdcents() + subeurcents;
+    while (cents >= 100.0) {
+      cents -= 100.0;
+      euros += 1;
+    }
+  }
+
+  int geteuros() const {
+    return euros;
+  }
+
+  float geteurcents() const {
+    return cents;
+  }
+
+  friend EUR operator+(const EUR& a, const EUR& b) {
+    EUR sum;
+
+    sum.euros = a.euros + b.euros;
+    sum.cents = a.cents + b.cents;
+
+    return sum;
+  }
+
+  friend EUR operator-(const EUR& a, const EUR& b) {
+    EUR sub;
+    sub.euros = a.euros - b.euros;
+    sub.cents = a.cents - b.cents;
+
+    if (sub.euros < 0 || sub.cents < 0.0) {
+      sub.euros = -(sub.euros);
+      sub.cents = -(sub.cents);
     }
 
-<<<<<<< HEAD
-  operator USD();
-
-=======
+    return sub;
   }
 
-  EUR(const class USD&) {}
-
->>>>>>> 672fcb22499d14012fd8887e959c2badb65f3aa0
-  friend EUR operator+(EUR& a, EUR& b) {
-    EUR result;
-
-    result.euros = a.euros + b.euros;
-    result.cents = a.cents + b.cents;
-
-    return result;
-  }
-
-<<<<<<< HEAD
   friend ostream& operator<<(ostream& os, const EUR& a) {
-    os << "EUR : " << a.euros + (float)(a.cents / 100.0);
-=======
-  friend ostream& operator<<(ostream& os, EUR& a) {
-    os << "EUR : " << a.euros << ' ' << a.cents << endl;
->>>>>>> 672fcb22499d14012fd8887e959c2badb65f3aa0
+    os << "EUR : " << a.euros + a.cents;
     return os;
   }
 };
 
-<<<<<<< HEAD
-USD::operator EUR()
+USD& USD::operator=(const EUR& e) // EUR -> USD
 {
-  int conv_e = (int)((100 / 81) * dollars);
-  float conv_ec = (float)((100 / 81) * cents);
-  return EUR(conv_e, conv_ec);
-}
+  dollars = (int)((float)(0.81) * e.geteuros());
+  cents = (float)((float)(0.81) * e.geteurcents());
+  while (cents >= 100.0) {
+    cents -= 100.0;
+    dollars += 1;
+  }
+  return *this;
+} // EUR+EUR -> USD
 
-EUR::operator USD()
-{
-  int conv_d = (int)((0.81) * euros);
-  float conv_dc = (float)(0.81 * cents);
-  return USD(conv_d, conv_dc);
-}
-
-=======
->>>>>>> 672fcb22499d14012fd8887e959c2badb65f3aa0
 int main()
 {
-  EUR myMoneyEuro;
-  USD myMoneyUSD;
+  EUR  myMoneyEuro;
+  USD  myMoneyUSD;
 
   myMoneyUSD = EUR(10, 20.0) + USD(20, 20.0);
   myMoneyEuro = USD(100, 30.0) + EUR(300, 20.0);
+
+  cout << myMoneyUSD << endl;
+  cout << myMoneyEuro << endl;
+
+  myMoneyUSD = EUR(1, 0.0) - USD(1, 0.0);
+  myMoneyEuro = USD(1, 30.0) - EUR(300, 20.0);
 
   cout << myMoneyUSD << endl;
   cout << myMoneyEuro << endl;

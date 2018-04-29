@@ -10,15 +10,14 @@ public:
   USD() : dollars(0), cents(0.0) {}
   USD(int _d, float _c) : dollars(_d), cents(_c) {
     if (_c < 0.0) {
-      cerr << "So much less cents." << endl;
-      cents = 0.0;
+      cerr << "So much less cents.\n";
     }
 
     else if (_c > 100.0) {
-      cerr << "So much cents." << endl;
-      dollars++;
+      cerr << "So much cents.\n";
     }
   }
+<<<<<<< HEAD
   USD(const class EUR&) {}
 
   USD& operator=(const EUR& e) { // EUR + USD
@@ -39,6 +38,10 @@ public:
   float getusdcents() const {
     return cents;
   }
+=======
+
+  operator EUR();
+>>>>>>> 5a945c9071c0e3403b93ad889999bf933d7dfdea
 
   friend USD operator+(const USD& a, const USD& b) {
 
@@ -65,12 +68,10 @@ public:
   EUR(int _d, float _c) : euros(_d), cents(_c) {
     if (_c < 0.0) {
       cerr << "So much less cents.\n";
-      cents = 0.0;
     }
 
     else if (_c > 100.0) {
       cerr << "So much cents.\n";
-      euros++;
     }
   }
 
