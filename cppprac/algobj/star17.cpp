@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include <cstdio>
 using namespace std;
 
 class star {
@@ -9,40 +9,30 @@ public:
 	void maketree() const {
 		int n1, n2, i, j, k;
 
-		for (i = 0; i < size - 1; ++i) {
+		for (i = 0; i < size; ++i) {
 			n1 = size - i;
 			n2 = i;
-			if (size >= 2) {
-				for (j = 0; j < n1; ++j) {
-					cout << " ";
-					if (j == n1 - 1) cout << "* ";
-				}
-				for (k = 0; k < n2; ++k) {
-					cout << " ";
-					if (k == n2 - 1) cout << "* ";
-				}
-				cout << "\n";
-				if (i == size - 1) {//마지막 행
-					for (int l = 0; l < 2 * i + 1; ++l)
-						cout << "*";
-				}
-			}
+			for (int j = 0; j < n1; ++j) printf(" ");
+			for (int k = 0; k < n2; ++k) printf("*");
+
+
 		}
 
-		if (i == size - 1) {//마지막 행
-			for (int l = 0; l < 2 * i + 1; ++l)
-				cout << "*";
+		if (i == size) {
+			for (int l = 0; l < 2 * i - 1; ++l)
+				printf("*");
 		}
-		cout << "\n";
+		printf("\n");
+
 	}
 
 };
 
 int main()
 {
-	ios::sync_with_stdio(false);
 	int n = 0;
-	cin >> n;
+	scanf("%d", &n);
+	if (n < 1 || n > 100) return -1;
 	star a(n);
 	a.maketree();
 	return 0;
