@@ -7,32 +7,26 @@ class nMatrix {
 	int size;
 public:
 	nMatrix(int n, int x) {
-		int r, c;
 		size = n;
-		values = NULL;
 
 		values = new int*[size];
 		for (int i = 0; i < size; ++i)
 			values[i] = new int[size];
 
-		for (r = 0; r < size; ++r) {
-			for (c = 0; c < size; ++c)
+		for (int r = 0; r < size; ++r) {
+			for (int c = 0; c < size; ++c)
 				values[r][c] = x;
 		}
 
 	}
 
 	~nMatrix() {
-		if (values != NULL) {
-			for (int i = 0; i < size; ++i)
-				delete[] values[i];
-			delete[] values;
-		}
+		// if (values != NULL)
+		delete values;
 	}
 
 	nMatrix(const nMatrix& m) {
 		size = m.size;
-
 		values = new int*[size];
 		for (int i = 0; i < size; ++i)
 			values[i] = new int[size];
@@ -47,30 +41,14 @@ public:
 		// deep copy == 새로 공간을 하나 만들어서 통째로 복사
 	}
 
-	nMatrix operator+(const nMatrix& m) {
+	nMatrix& operator+(const nMatrix& m) {
 		int i, j;
-		nMatrix result(*this);
-		size = result.size;
 
-		for (i = 0; i < size; ++i)
-			for (j = 0; j < size; ++j)
-				result.values[i][j] = values[i][j] + m.values[i][j];
-
-		cout << endl;
-
-		return result;
-	}
-
-	nMatrix& operator=(const nMatrix& m) {
-		size = m.size;
-
-		values = new int*[size];
-		for (int i = 0; i < size; ++i)
-			values[i] = new int[size];
-
-		for (int i = 0; i < size; ++i)
-			for (int j = 0; j < size; ++j)
-				values[i][j] = m.values[i][j];
+		for (i = 0; i < size; ++i) {
+			for (j = 0; j < size; ++j) {
+				values[i][j] += m.values[i][j];
+			}
+		}
 
 		return *this;
 	}
@@ -90,13 +68,20 @@ int main(int argc, char const *argv[])
 {
 	nMatrix a(3, 1), b(3, 1), c(a);
 
-	cout << a << endl;
-	cout << b << endl;
-	cout << c << endl;
+	cout << a ;
+	cout << endl;
+
+	cout << b ;
+	cout << endl;
+
+	cout << c ;
+	cout << endl;
 
 	c = a + b;
-	//c.operator=(a.operator+(b))
+	// cout << a + b;
+	//c = a.operator+(b)
 
-	cout << c << endl;
+	cout << c ;
+	cout << endl;
 	return 0;
 }
