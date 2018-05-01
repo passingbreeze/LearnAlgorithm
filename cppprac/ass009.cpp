@@ -13,11 +13,9 @@ public:
 		y = _y;
 	}
 	int read_x() const {
-		// cout << "in point class : " << x << endl;
 		return x;
 	}
 	int read_y() const {
-		// cout << "in point class : " << y << endl;
 		return y;
 	}
 };
@@ -28,15 +26,14 @@ class rectangle {
 public:
 	rectangle() {
 		isEmpty = true;
-		point bl;
-		point ur;
-		bottomleft = &bl;
-		upperright = &ur;
+		bottomleft = NULL;
+		upperright = NULL;
 	}
 	rectangle(int x1, int x2, int y1, int y2) {
 		isEmpty = false;
-		bottomleft->set(x1, y1);
-		upperright->set(x2, y2);
+		point bl(x1, y1);
+		point ur(x2, y2);
+		rectangle(bl, ur);
 	}
 
 	rectangle(point bl, point ur) {
@@ -44,6 +41,8 @@ public:
 		bottomleft = &bl;
 		upperright = &ur;
 	}
+
+	rectangle(const rectangle& r) : bottomleft(r.bottomleft), upperright(r.upperright), isEmpty(r.isEmpty) {}
 
 	bool getEmpty() const {
 		return isEmpty;
@@ -124,17 +123,13 @@ public:
 	friend istream& operator>>(istream& is, rectangle& r) {
 		int x1 = 0, x2 = 0, y1 = 0, y2 = 0;
 		is >> x1 >> y1 >> x2 >> y2;
-
-		point a(x1, y1);
-		point b(x2, y2);
-
-		r = rectangle(a, b);
+		//stack overflow 지점
 		return is;
 	}
 
 	friend ostream& operator<<(ostream& os, rectangle& r) {
-		os << "bottomleft point : (" << r.blxcor() << ", " << r.blycor() << "), ";
-		os << "upperright point : (" << r.upxcor() << ", " << r.upycor() << ")\n";
+		os << "bottomleft point : (" << (r.bottomleft)->read_x() << ", " << (r.bottomleft)->read_y() << "), ";
+		os << "upperright point : (" << (r.upperright)->read_x() << ", " << (r.upperright)->read_y() << ")\n";
 		return os;
 	}
 };
@@ -145,11 +140,8 @@ int main()
 	rectangle r1, r2, r3;
 	cin >> r1;
 	cin >> r2;
-	cout << "r1 bottomleft : (" << r1.blxcor() << ", " << r1.blycor() << ")\n";
-	cout << "r1 upperright : (" << r1.upxcor() << ", " << r1.upycor() << ")\n";
-
-	cout << "r2 bottomleft : (" << r2.blxcor() << ", " << r2.blycor() << ")\n";
-	cout << "r2 upperright : (" << r2.upxcor() << ", " << r2.upycor() << ")\n";
+	cout << "r1 -> " << r1;
+	cout << "r2 -> " << r2;
 
 	if (r1.blxcor() > r1.upxcor() || r1.blycor() > r1.upycor()) {
 		cerr << "not available values\n";
