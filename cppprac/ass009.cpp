@@ -61,10 +61,10 @@ public:
 		int urx = upperright->read_x();
 		int ury = upperright->read_y();
 
-		int r_blx = ((r.bottomleft)->read_x());
-		int r_bly = ((r.bottomleft)->read_y());
-		int r_urx = ((r.upperright)->read_x());
-		int r_ury = ((r.upperright)->read_y());
+		int r_blx = (r.bottomleft)->read_x();
+		int r_bly = (r.bottomleft)->read_y();
+		int r_urx = (r.upperright)->read_x();
+		int r_ury = (r.upperright)->read_y();
 
 		if (r_urx >= urx && r_ury >= ury) {
 			surx = r_urx;
@@ -88,7 +88,7 @@ public:
 	}
 
 	rectangle operator-(const rectangle& r) {
-
+		rectangle result;
 		int sblx = 0, surx = 0, sbly = 0, sury = 0;
 
 		int blx = bottomleft->read_x();
@@ -96,26 +96,17 @@ public:
 		int urx = upperright->read_x();
 		int ury = upperright->read_y();
 
-		int r_blx = ((r.bottomleft)->read_x());
-		int r_bly = ((r.bottomleft)->read_y());
-		int r_urx = ((r.upperright)->read_x());
-		int r_ury = ((r.upperright)->read_y());
+		int r_blx = (r.bottomleft)->read_x();
+		int r_bly = (r.bottomleft)->read_y();
+		int r_urx = (r.upperright)->read_x();
+		int r_ury = (r.upperright)->read_y();
 
-		if ((blx >= r_blx && urx >= r_urx) && (bly >= r_bly && ury >= r_ury)) {
-			sblx = r_blx;
-			surx = r_urx;
-			sbly = r_bly;
-			sury = r_ury;
+		if (urx == r_blx || blx == r_urx) {
+			result.isEmpty = true;
 		}
 
-		else if ((blx < r_blx && urx < r_urx) && (bly < r_bly && ury < r_ury)) {
-			sblx = blx;
-			surx = urx;
-			sbly = bly;
-			sury = ury;
-		}
 
-		rectangle result;
+
 		return result;
 	}
 
