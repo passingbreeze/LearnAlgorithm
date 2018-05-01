@@ -2,33 +2,22 @@
 
 using namespace std;
 
-class aplusb {
-	int m = 0;
-public:
-	aplusb(int _m): m(_m) {}
-	aplusb& operator+(const aplusb b) {
-		m += b.m;
-		return *this;
-	}
-	friend ostream& operator<<(ostream& os, const aplusb& c) {
-		os << c.m ;
-		return os;
-	}
-};
-
 int main()
 {
-	ios::sync_with_stdio(false);
-	int a, b, n = 0;
+	ios_base::sync_with_stdio(false);
+	int a = 0, b = 0, n = 0, i = 0;
 	cin >> n;
-	aplusb* values = new aplusb[n];
-	for (int i = 0; i < n; ++i) {
-		cin >> a >> b;
 
+	int* values = new int[n];
+	while (i < n) {
+		cin >> a >> b;
+		values[i] = a + b;
+		i++;
 	}
-	aplusb p(a);
-	cin >> b;
-	aplusb q(b);
-	cout << p + q << endl;
+
+	for (int j = 0; j < i; ++j)
+		cout << values[j] << endl;
+
+	delete[] values;
 	return 0;
 }
