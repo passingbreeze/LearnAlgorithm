@@ -26,24 +26,30 @@ class rectangle {
 public:
 	rectangle() {
 		isEmpty = true;
-		bottomleft = NULL;
-		upperright = NULL;
+		bottomleft = new point();
+		upperright = new point();
 	}
 	rectangle(int x1, int x2, int y1, int y2) {
 		isEmpty = false;
-		point bl(x1, y1);
-		point ur(x2, y2);
-		rectangle(bl, ur);
+		bottomleft = new point(x1, y1);
+		upperright = new point(x2, y2);
 	}
 
 	rectangle(point bl, point ur) {
 		isEmpty = false;
-		bottomleft = &bl;
-		upperright = &ur;
+		bottomleft = new point(bl);
+		upperright = new point(ur);
 	}
 
-	rectangle(const rectangle& r) : bottomleft(r.bottomleft), upperright(r.upperright), isEmpty(r.isEmpty) {}
+	/*
+		Compiler에 따라 다른 것 같다.
+		clang은 굳이 destructor가 없어도 돌아가긴한다.
 
+		~rectangle() {
+			delete[] bottomleft;
+			delete[] upperright;
+		}
+	*/
 	bool getEmpty() const {
 		return isEmpty;
 	}
@@ -63,6 +69,7 @@ public:
 	rectangle operator+(const rectangle& r) {
 
 		int sblx = 0, surx = 0, sbly = 0, sury = 0;
+		rectangle result(sblx, surx, sbly, sury);
 
 		int blx = blxcor();
 		int bly = blycor();
@@ -74,12 +81,16 @@ public:
 		int r_urx = r.upxcor();
 		int r_ury = r.upycor();
 
+		if (blx == r_blx || urx == r_urx || bly == r_bly || ury == r_ury) {
+			result.isEmpty = true;
+			return result;
+		}
+
 		sblx = r_blx > blx ? blx : r_blx;
 		sbly = r_bly > bly ? bly : r_bly;
 		surx = r_urx >= urx ? r_urx : urx;
 		sury = r_ury >= ury ? r_ury : r_bly;
 
-		rectangle result(sblx, surx, sbly, sury);
 		return result;
 
 	}
@@ -98,7 +109,7 @@ public:
 		int r_urx = r.upxcor();
 		int r_ury = r.upycor();
 
-		if (urx - r_blx >= 0 || blx - r_urx >= 0) {
+		if (r_blx - urx >= 0 || r_blx - urx <= 0 || bly - r_ury >= 0 || r_bly - ury >= 0) {
 			isEmpty = true;
 			surx = 0;
 			sury = 0;
@@ -108,12 +119,31 @@ public:
 
 		else {
 			isEmpty = false;
-			surx = urx;
-			sury = ury;
-			sblx = r_blx;
-			sbly = r_bly;
-		}
+			if (r_urx > urx && r_blx > blx) {
+				surx = urx;
+				sury = ury;
+				sblx = r_blx;
+				sbly = r_bly;
+			}
 
+			else if (r_urx < urx && r_blx < blx) {
+				surx = r_urx;
+				sury = r_ury;
+				sblx = blx;
+				sbly = bly;
+			}
+
+			else {
+				isEmpty = true;
+				surx = 0;
+				sury = 0;
+				sblx = 0;
+				sbly = 0;
+			}
+
+		}
+		cout << surx << ' ' << sury << ' '; // for debug
+		cout << sblx << ' ' << sbly << endl;
 		(result.bottomleft)->set(sblx, sbly);
 		(result.upperright)->set(surx, sury);
 
@@ -123,7 +153,8 @@ public:
 	friend istream& operator>>(istream& is, rectangle& r) {
 		int x1 = 0, x2 = 0, y1 = 0, y2 = 0;
 		is >> x1 >> y1 >> x2 >> y2;
-		//stack overflow 지점
+		(r.bottomleft)->set(x1, y1);
+		(r.upperright)->set(x2, y2);
 		return is;
 	}
 
@@ -155,6 +186,10 @@ int main()
 
 
 	r3 = r1 + r2;
+	if (r3.getEmpty()) {
+		cerr << "Empty Rectangle\n";
+		return -1;
+	}
 	cout << r3;
 	r3 = r1 - r2;
 	if (r3.getEmpty()) {
