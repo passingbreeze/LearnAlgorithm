@@ -24,27 +24,19 @@ class rectangle {
 	point *bottomleft, *upperright;
 	bool isEmpty;
 public:
-	rectangle() {
-		isEmpty = true;
-		bottomleft = new point();
-		upperright = new point();
-	}
-	rectangle(int x1, int x2, int y1, int y2) {
+	rectangle(): bottomleft(new point()), upperright(new point()), isEmpty(true) {}
+	rectangle(int x1, int y1, int x2, int y2): bottomleft(new point(x1, y1)), upperright(new point(x2, y2)) {
 		isEmpty = false;
 		if (x1 == x2 || y1 == y2) {
 			isEmpty = true;
 		}
-		bottomleft = new point(x1, y1);
-		upperright = new point(x2, y2);
 	}
 
-	rectangle(point bl, point ur) {
+	rectangle(point bl, point ur): bottomleft(new point(bl)), upperright(new point(ur)) {
 		isEmpty = false;
 		if (bl.read_x() == ur.read_x() || bl.read_y() == ur.read_y()) {
 			isEmpty = true;
 		}
-		bottomleft = new point(bl);
-		upperright = new point(ur);
 	}
 
 	rectangle(const rectangle& r) {
@@ -74,6 +66,41 @@ public:
 		return upperright->read_y();
 	}
 
+	rectangle operator++(int) { // postfix
+		rectangle result(*this);
+
+		int blx = bottomleft->read_x();
+		int bly = bottomleft->read_y();
+		int urx = upperright->read_x();
+		int ury = upperright->read_y();
+
+		if (result.isEmpty == true) result.isEmpty = false;
+
+		(result.bottomleft)->set(blx - 1, bly - 1);
+		(result.upperright)->set(urx + 1, ury + 1);
+
+		if (result.blxcor() < 0 || result.blycor() < 0) {
+			(result.bottomleft)->set(0, 0);
+		}
+		return result;
+	}
+
+	rectangle& operator++() {// prefix
+		int revblx = blxcor() - 1;
+		int revbly = blycor() - 1;
+		int revurx = upxcor() + 1;
+		int revury = upycor() + 1;
+		if (revblx < 0 || revbly < 0) {
+			revblx = 0;
+			revbly = 0;
+		}
+
+		(bottomleft)->set(revblx, revbly);
+		(upperright)->set(revurx, revury);
+		return *this;
+	}
+
+
 	rectangle operator+(const rectangle& r) {
 
 		int sblx = 0, surx = 0, sbly = 0, sury = 0;
@@ -89,18 +116,18 @@ public:
 		int r_urx = (r.upperright)->read_x();
 		int r_ury = (r.upperright)->read_y();
 
-		if (urx < r_urx && ury < r_ury) {
-			sblx = r_blx > blx ? blx : r_blx;
-			sbly = r_bly > bly ? bly : r_bly;
-			surx = r_urx >= urx ? r_urx : urx;
-			sury = r_ury >= ury ? r_ury : r_bly;
+		if (urx <= r_urx) {
+			sblx = blx;
+			sbly = bly;
+			surx = r_urx;
+			sury = ury <= r_ury ? r_ury : ury;
 		}
 
-		else if (r_urx < urx && r_ury < ury) {
-			sblx = blx > r_blx ? r_blx : blx;
-			sbly = bly > r_bly ? r_bly : bly;
-			surx = urx >= r_urx ? urx : r_urx;
-			sury = ury >= r_ury ? ury : bly;
+		else if (urx >= r_urx) {
+			sblx = r_blx;
+			sbly = r_bly;
+			surx = ury >= r_ury ? urx : r_ury;
+			sury = ury;
 		}
 
 		(result.bottomleft)->set(sblx, sbly);
@@ -131,29 +158,28 @@ public:
 			return result;
 		}
 
-		else if (r_blx < urx) {
-			sblx = r_blx;
-			surx = urx;
+		else if (blx <= r_blx) {
+			sblx = urx <= r_urx ? r_blx : blx;
+			surx = urx <= r_urx ? urx : r_urx;
 		}
 
-		else if (blx < r_urx) {
-			sblx = blx;
-			surx = r_urx;
+		else {
+			sblx = urx <= r_urx ? blx : r_blx;
+			surx = urx <= r_urx ? r_blx : blx;
 		}
-
 
 		if (ury <= r_bly || r_ury <= bly) { // r1 < r2 || r1 > r2
 			return result;
 		}
 
-		else if (r_bly < ury) {
+		else if (bly <= r_bly) {
 			sbly = r_bly;
-			sury = ury;
+			sury = ury <= r_ury ? ury : r_ury;
 		}
 
-		else if (r_ury > bly) {
+		else {
 			sbly = bly;
-			sury = r_ury;
+			sury = ury <= r_ury ? ury : r_ury;
 		}
 
 		(result.bottomleft)->set(sblx, sbly);
@@ -190,6 +216,8 @@ public:
 int main()
 {
 	rectangle r1, r2, r3;
+	rectangle rec(2, 2, 5, 5); // practice code from class
+	rectangle rec2(3, 3, 7, 7); // practice code from class
 	cin >> r1;
 	cin >> r2;
 	cout << "r1 -> " << r1;
@@ -215,5 +243,12 @@ int main()
 	cout << "result of - operation -> ";
 	if (r3.getEmpty() == false) cout << r3;
 	else cout << "Empty Rectangle\n";
+
+	rectangle newrec = rec++; // practice code from class
+	rectangle result = newrec + rec2; // practice code from class
+
+	cout << newrec;
+	cout << result;
+
 	return 0;
 }
