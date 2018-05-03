@@ -66,6 +66,26 @@ public:
 		return upperright->read_y();
 	}
 
+	rectangle operator++(int a) {
+		rectangle result(*this);
+
+		int blx = blxcor();
+		int bly = blycor();
+		int urx = upxcor();
+		int ury = upycor();
+
+		if (result.isEmpty == true) result.isEmpty = false;
+
+		(result.bottomleft)->set(blx + a, bly + a);
+		(result.upperright)->set(urx + a, ury + a);
+
+		return result;
+	}
+
+	rectangle& operator++() {
+		return *this;
+	}
+
 	rectangle operator+(const rectangle& r) {
 
 		int sblx = 0, surx = 0, sbly = 0, sury = 0;
