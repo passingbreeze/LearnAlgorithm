@@ -31,25 +31,33 @@ public:
 	}
 	rectangle(int x1, int x2, int y1, int y2) {
 		isEmpty = false;
+		if (x1 == x2 || y1 == y2) {
+			isEmpty = true;
+		}
 		bottomleft = new point(x1, y1);
 		upperright = new point(x2, y2);
 	}
 
 	rectangle(point bl, point ur) {
 		isEmpty = false;
+		if (bl.read_x() == ur.read_x() || bl.read_y() == ur.read_y()) {
+			isEmpty = true;
+		}
 		bottomleft = new point(bl);
 		upperright = new point(ur);
 	}
 
-	/*
-		Compiler에 따라 다른 것 같다.
-		clang은 굳이 destructor가 없어도 돌아가긴한다.
+	rectangle(const rectangle& r) {
+		isEmpty = r.isEmpty;
+		bottomleft = new point(*(r.bottomleft));
+		upperright = new point(*(r.upperright));
+	}
 
-		~rectangle() {
-			delete[] bottomleft;
-			delete[] upperright;
-		}
-	*/
+	~rectangle() {
+		delete upperright;
+		delete bottomleft;
+	}
+
 	bool getEmpty() const {
 		return isEmpty;
 	}
@@ -91,83 +99,96 @@ public:
 		int sblx = 0, surx = 0, sbly = 0, sury = 0;
 		rectangle result(sblx, surx, sbly, sury);
 
-		int blx = blxcor();
-		int bly = blycor();
-		int urx = upxcor();
-		int ury = upycor();
+		int blx = bottomleft->read_x();
+		int bly = bottomleft->read_y();
+		int urx = upperright->read_x();
+		int ury = upperright->read_y();
 
-		int r_blx = r.blxcor();
-		int r_bly = r.blycor();
-		int r_urx = r.upxcor();
-		int r_ury = r.upycor();
+		int r_blx = (r.bottomleft)->read_x();
+		int r_bly = (r.bottomleft)->read_y();
+		int r_urx = (r.upperright)->read_x();
+		int r_ury = (r.upperright)->read_y();
 
-		if (blx == r_blx || urx == r_urx || bly == r_bly || ury == r_ury) {
-			result.isEmpty = true;
-			return result;
+		if (urx < r_urx && ury < r_ury) {
+			sblx = r_blx > blx ? blx : r_blx;
+			sbly = r_bly > bly ? bly : r_bly;
+			surx = r_urx >= urx ? r_urx : urx;
+			sury = r_ury >= ury ? r_ury : r_bly;
 		}
 
-		sblx = r_blx > blx ? blx : r_blx;
-		sbly = r_bly > bly ? bly : r_bly;
-		surx = r_urx >= urx ? r_urx : urx;
-		sury = r_ury >= ury ? r_ury : r_bly;
+		else if (r_urx < urx && r_ury < ury) {
+			sblx = blx > r_blx ? r_blx : blx;
+			sbly = bly > r_bly ? r_bly : bly;
+			surx = urx >= r_urx ? urx : r_urx;
+			sury = ury >= r_ury ? ury : bly;
+		}
 
+		(result.bottomleft)->set(sblx, sbly);
+		(result.upperright)->set(surx, sury);
+		if (sblx != surx && sbly != sury) {
+			result.isEmpty = false;
+		}
 		return result;
 
 	}
 
 	rectangle operator-(const rectangle& r) {
-		rectangle result;
 		int sblx = 0, surx = 0, sbly = 0, sury = 0;
+		rectangle result(sblx, sbly, surx, sury);
 
-		int blx = blxcor();
-		int bly = blycor();
-		int urx = upxcor();
-		int ury = upycor();
+		int blx = bottomleft->read_x();
+		int bly = bottomleft->read_y();
+		int urx = upperright->read_x();
+		int ury = upperright->read_y();
 
-		int r_blx = r.blxcor();
-		int r_bly = r.blycor();
-		int r_urx = r.upxcor();
-		int r_ury = r.upycor();
+		int r_blx = (r.bottomleft)->read_x();
+		int r_bly = (r.bottomleft)->read_y();
+		int r_urx = (r.upperright)->read_x();
+		int r_ury = (r.upperright)->read_y();
 
-		if (r_blx - urx >= 0 || r_blx - urx <= 0 || bly - r_ury >= 0 || r_bly - ury >= 0) {
-			isEmpty = true;
-			surx = 0;
-			sury = 0;
-			sblx = 0;
-			sbly = 0;
+
+		if (urx <= r_blx || r_urx <= blx) { // r1 < r2 || r1 > r2
+			return result;
 		}
 
-		else {
-			isEmpty = false;
-			if (r_urx > urx && r_blx > blx) {
-				surx = urx;
-				sury = ury;
-				sblx = r_blx;
-				sbly = r_bly;
-			}
-
-			else if (r_urx < urx && r_blx < blx) {
-				surx = r_urx;
-				sury = r_ury;
-				sblx = blx;
-				sbly = bly;
-			}
-
-			else {
-				isEmpty = true;
-				surx = 0;
-				sury = 0;
-				sblx = 0;
-				sbly = 0;
-			}
-
+		else if (r_blx < urx) {
+			sblx = r_blx;
+			surx = urx;
 		}
-		cout << surx << ' ' << sury << ' '; // for debug
-		cout << sblx << ' ' << sbly << endl;
+
+		else if (blx < r_urx) {
+			sblx = blx;
+			surx = r_urx;
+		}
+
+
+		if (ury <= r_bly || r_ury <= bly) { // r1 < r2 || r1 > r2
+			return result;
+		}
+
+		else if (r_bly < ury) {
+			sbly = r_bly;
+			sury = ury;
+		}
+
+		else if (r_ury > bly) {
+			sbly = bly;
+			sury = r_ury;
+		}
+
 		(result.bottomleft)->set(sblx, sbly);
 		(result.upperright)->set(surx, sury);
-
+		if (sblx != surx && sbly != sury) {
+			result.isEmpty = false;
+		}
 		return result;
+	}
+
+	rectangle& operator=(const rectangle& r) {
+		isEmpty = r.isEmpty;
+		bottomleft->set(r.blxcor(), r.blycor());
+		upperright->set(r.upxcor(), r.upycor());
+		return *this;
 	}
 
 	friend istream& operator>>(istream& is, rectangle& r) {
@@ -206,16 +227,13 @@ int main()
 
 
 	r3 = r1 + r2;
-	if (r3.getEmpty()) {
-		cerr << "Empty Rectangle\n";
-		return -1;
-	}
-	cout << r3;
+	cout << "result of + operation -> ";
+	if (r3.getEmpty() == false) cout << r3;
+	else cout << "Empty Rectangle\n";
+
 	r3 = r1 - r2;
-	if (r3.getEmpty()) {
-		cerr << "Empty Rectangle\n";
-		return -1;
-	}
-	cout << r3;
+	cout << "result of - operation -> ";
+	if (r3.getEmpty() == false) cout << r3;
+	else cout << "Empty Rectangle\n";
 	return 0;
 }
