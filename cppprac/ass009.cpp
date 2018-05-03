@@ -66,6 +66,7 @@ public:
 		return upperright->read_y();
 	}
 
+<<<<<<< HEAD
 	rectangle operator++(int) { // postfix
 		rectangle result(*this);
 
@@ -101,6 +102,28 @@ public:
 	}
 
 
+=======
+	rectangle operator++(int a) {
+		rectangle result(*this);
+
+		int blx = blxcor();
+		int bly = blycor();
+		int urx = upxcor();
+		int ury = upycor();
+
+		if (result.isEmpty == true) result.isEmpty = false;
+
+		(result.bottomleft)->set(blx + a, bly + a);
+		(result.upperright)->set(urx + a, ury + a);
+
+		return result;
+	}
+
+	rectangle& operator++() {
+		return *this;
+	}
+
+>>>>>>> d3149c1663a643f86a2340238ad229708e932dfe
 	rectangle operator+(const rectangle& r) {
 
 		int sblx = 0, surx = 0, sbly = 0, sury = 0;
