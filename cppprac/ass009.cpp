@@ -3,22 +3,22 @@
 using namespace std;
 
 class point {
-	int x, y;
+	int x, y; // 기본값이 private var <=> struct라면 기본값이 public
 public:
 	point(): x(0), y(0) {}
 	point(int _x, int _y) : x(_x), y(_y) {}
 	point(const point& p) : x(p.x), y(p.y) {}
-	void set(int _x, int _y) {
+	void set(int _x, int _y) { // 여기에 정의된 함수들은
 		x = _x;
 		y = _y;
-	}
+	} // 클래스에 포함되어있는 것이 아니라 이 클래스의 객체(변수)가 선언 되었을 때 쓸 수 있는 함수(의존 함수)
 	int read_x() const {
 		return x;
 	}
 	int read_y() const {
 		return y;
 	}
-};
+}; // class == struct
 
 class rectangle {
 	point *bottomleft, *upperright;
@@ -66,7 +66,6 @@ public:
 		return upperright->read_y();
 	}
 
-<<<<<<< HEAD
 	rectangle operator++(int) { // postfix
 		rectangle result(*this);
 
@@ -101,29 +100,6 @@ public:
 		return *this;
 	}
 
-
-=======
-	rectangle operator++(int a) {
-		rectangle result(*this);
-
-		int blx = blxcor();
-		int bly = blycor();
-		int urx = upxcor();
-		int ury = upycor();
-
-		if (result.isEmpty == true) result.isEmpty = false;
-
-		(result.bottomleft)->set(blx + a, bly + a);
-		(result.upperright)->set(urx + a, ury + a);
-
-		return result;
-	}
-
-	rectangle& operator++() {
-		return *this;
-	}
-
->>>>>>> d3149c1663a643f86a2340238ad229708e932dfe
 	rectangle operator+(const rectangle& r) {
 
 		int sblx = 0, surx = 0, sbly = 0, sury = 0;
