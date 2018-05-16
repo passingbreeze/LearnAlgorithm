@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cstring>
 #include <sstream>
 #include <iomanip> // header for set precision
 
@@ -77,6 +78,7 @@ public:
 		ofstream ofs(filename, ios::binary);
 		// in Ubuntu Linux / Max OS X, "ifs.binary" can be used instead of "ios::binary".
 		string strage, strscore;
+		char str_age[3], str_scr[5];
 
 		if(!(ofs.is_open())){
 			cerr << "No Output File." << endl;
@@ -88,10 +90,12 @@ public:
 		{
 			strage = int_to_str(students[i].age);
 			strscore = float_to_str(students[i].score);
+			strncpy(str_age, strage.c_str(), 3);
+			strncpy(str_scr, strscore.c_str(), 5);
 			ofs.write(students[i].name,20);
-			ofs.write(&strage[0],3);
+			ofs.write(str_age,3);
 			ofs.write(students[i].dept,20);
-			ofs.write(&strscore[0], 5);
+			ofs.write(str_scr, 5);
 		}
 		ofs.close();
 	}
@@ -121,9 +125,11 @@ public:
 		ifs.close();
 		return n;
 	}
+
 	void writeToText(char* filename, int n, student* students){
 		ofstream ofs(filename);
 		string strage, strscore;
+		char str_age[3], str_scr[5];
 
 		if(!(ofs.is_open())){
 			cerr << "No Output File." << endl;
@@ -135,10 +141,12 @@ public:
 		{
 			strage = int_to_str(students[i].age);
 			strscore = float_to_str(students[i].score);
+			strncpy(str_age, strage.c_str(), 3);
+			strncpy(str_scr, strscore.c_str(), 5);
 			ofs.write(students[i].name,20);
-			ofs.write(&strage[0],3);
+			ofs.write(str_age,3);
 			ofs.write(students[i].dept,20);
-			ofs.write(&strscore[0], 5);
+			ofs.write(str_scr, 5);
 		}
 		ofs.close();
 	}
