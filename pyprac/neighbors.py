@@ -1,5 +1,7 @@
 #-*-coding:utf-8-*-
 
+import sys
+
 def vacantmatrix(r,c):
     m = [[0]*c for i in range(r)]
     return m
@@ -14,14 +16,10 @@ def transpose(mat):
     return mat2
 
 def mkevalmat(lst):
-    evallst = lst
-    for i in range(len(evallst)):
-        for j in range(len(evallst[i])):
-            evallst[i] = evallst[i][j].split()
-    for i in range(len(evallst)):
-        for j in range(len(evallst[i])) :
-            evallst[i][j] = eval(evallst[i][j])
-    return evallst
+    for i in range(len(lst)):
+        for j in range(len(lst[i])) :
+            lst[i][j] = eval(lst[i][j])
+    return lst
 
 def neighmat(vacmat, nummat):
     for i in range(1, (len(vacmat)-1)):
@@ -34,28 +32,37 @@ def callist(weimat, mat):
     col = len(mat[0])
     for i in range(1, (len(mat)-1)):
         for j in range(1, (len(mat[i])-1)):
-            weimat[i-1][j-1]=mat[i-1][j-1]+mat[i][j-1]+mat[i+1][j-1]+mat[i][j-1]+mat[i][j+1]+mat[i+1][j-1]+mat[i+1][j]+mat[i+1][j+1]
-    print(weimat)
+            weimat[i-1][j-1] = mat[i-1][j-1]+mat[i-1][j]+mat[i-1][j+1]+mat[i][j-1]+mat[i][j+1]+mat[i+1][j-1]+mat[i+1][j]+mat[i+1][j+1]
     return weimat
 
+def findmax(lst):
+    row = len(lst)
+    col = len(lst[0])
+    templist = [0]*(row*col)
+    i = 0
+    for r in range(row):
+        for c in range(col):
+            templist[i] = lst[r][c]
+            i+=1
+    templist.sort()
+    templist.reverse()
+    max = templist[0]
+    for r in range(row):
+        for c in range(col):
+            if lst[r][c] == max :
+                print(c, r)
+                return
+
 def main():
-    input_num = []
-    while True:
-        input_str = input()
-        if input_str == "":
-            break
-        else :
-            str = input_str.splitlines()
-            input_num.append(str)
-    
-    mat = mkevalmat(input_num)
+    mat = [line.split() for line in sys.stdin]
+    mat = mkevalmat(mat)
     row = len(mat)
     col = len(mat[0])
     mat2 = vacantmatrix(row+2,col+2)
     mat2 = neighmat(mat2, mat)
-    print(mat2)
     weighmat = vacantmatrix(row,col)
     result = callist(weighmat, mat2)
+    findmax(result)
 
 if __name__ == '__main__':
     main()
