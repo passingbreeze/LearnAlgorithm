@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cstring>
 #include <sstream>
 #include <iomanip> // header for set precision
 
@@ -50,7 +51,6 @@ public:
 
 	int readFromText(char* filename, student** students) {
 		int n = 0;
-		char std_age[3], std_score[5];
 		
 		ifstream ifs(filename);
 
@@ -60,15 +60,8 @@ public:
 		}
 		ifs >> n; // the number of records
 	
-		for (int i = 0; i < n; ++i){
-			ifs.read((*students)[i].name, 20);			
-			ifs.read(std_age, 3);
-			(*students)[i].age = (unsigned)str_to_int(std_age);
-			
-			ifs.read((*students)[i].dept, 20);			
-			ifs.read(std_score, 5); // include newline character
-			(*students)[i].score = (float)str_to_double(std_score);
-		}
+		for (int i = 0; i < n; ++i)
+			ifs >> (*students)[i];
 		ifs.close();
 		return n;
 	}
@@ -76,29 +69,21 @@ public:
 	void writeToBinary(char* filename, int n, student* students){
 		ofstream ofs(filename, ios::binary);
 		// in Ubuntu Linux / Max OS X, "ifs.binary" can be used instead of "ios::binary".
-		string strage, strscore;
-
+		
 		if(!(ofs.is_open())){
 			cerr << "No Output File." << endl;
 			return;
 		}
 
 		ofs << n;
-		for (int i = 0; i < n; ++i)
-		{
-			strage = int_to_str(students[i].age);
-			strscore = float_to_str(students[i].score);
-			ofs.write(students[i].name,20);
-			ofs.write(&strage[0],3);
-			ofs.write(students[i].dept,20);
-			ofs.write(&strscore[0], 5);
+		for (int i = 0; i < n; ++i){
+			ofs << students[i];
 		}
 		ofs.close();
 	}
 
 	int readFromBinary(char* filename, student** students){
 		int n = 0;
-		char std_age[3], std_score[5];
 		
 		ifstream ifs(filename, ios::binary); 
 		// in Ubuntu Linux / Max OS X, "ifs.binary" can be used instead of "ios::binary".
@@ -108,22 +93,15 @@ public:
 			return -1;
 		}
 		ifs >> n; // the number of records
-		
-		for (int i = 0; i < n; ++i){
-			ifs.read((*students)[i].name, 20);			
-			ifs.read(std_age, 3);
-			(*students)[i].age = (unsigned)str_to_int(std_age);
-			
-			ifs.read((*students)[i].dept, 20);			
-			ifs.read(std_score, 5);
-			(*students)[i].score = (float)str_to_double(std_score);
-		}
+	
+		for (int i = 0; i < n; ++i)
+			ifs >> (*students)[i];
 		ifs.close();
 		return n;
 	}
+
 	void writeToText(char* filename, int n, student* students){
 		ofstream ofs(filename);
-		string strage, strscore;
 
 		if(!(ofs.is_open())){
 			cerr << "No Output File." << endl;
@@ -131,18 +109,34 @@ public:
 		}
 
 		ofs << n;
-		for (int i = 0; i < n; ++i)
-		{
-			strage = int_to_str(students[i].age);
-			strscore = float_to_str(students[i].score);
-			ofs.write(students[i].name,20);
-			ofs.write(&strage[0],3);
-			ofs.write(students[i].dept,20);
-			ofs.write(&strscore[0], 5);
+		for (int i = 0; i < n; ++i){
+			ofs << students[i];
 		}
 		ofs.close();
 	}
 
+	friend istream& operator>>(istream& is, student& s){
+		char std_age[3], std_score[4];
+		is.read(s.name, 20);	
+		is.read(std_age, 3);
+		s.age = (unsigned)(s.str_to_int(std_age));
+		is.read(s.dept, 20);
+		is.read(std_score, 5);
+		s.score = (float)(s.str_to_double(std_score));
+		return is;
+	}
+
+	friend ostream& operator<<(ostream& os, student& s){
+		string strage, strscore;
+		
+		strage = (s.int_to_str(s.age));
+		strscore = (s.float_to_str(s.score));
+		os.write(s.name, 20);
+		os.write(&strage[0], 4);
+		os.write(s.dept, 20);
+		os.write(&strscore[0],5);
+		return os;
+	}
 };
 
 int main()
