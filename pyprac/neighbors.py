@@ -24,11 +24,19 @@ def mkevalmat(lst):
     return evallst
 
 def neighmat(vacmat, nummat):
-    for i in range(len(nummat)):
-        for j in range(len(nummat[i])):
-            vacmat[i][j]=nummat[i][j]
-    print(vacmat)
+    for i in range(1, (len(vacmat)-1)):
+        for j in range(1, (len(vacmat[i])-1)):
+            vacmat[i][j]=nummat[i-1][j-1]
     return vacmat
+
+def callist(weimat, mat):
+    row = len(mat)
+    col = len(mat[0])
+    for i in range(1, (len(mat)-1)):
+        for j in range(1, (len(mat[i])-1)):
+            weimat[i-1][j-1]=mat[i-1][j-1]+mat[i][j-1]+mat[i+1][j-1]+mat[i][j-1]+mat[i][j+1]+mat[i+1][j-1]+mat[i+1][j]+mat[i+1][j+1]
+    print(weimat)
+    return weimat
 
 def main():
     input_num = []
@@ -45,6 +53,9 @@ def main():
     col = len(mat[0])
     mat2 = vacantmatrix(row+2,col+2)
     mat2 = neighmat(mat2, mat)
+    print(mat2)
+    weighmat = vacantmatrix(row,col)
+    result = callist(weighmat, mat2)
 
 if __name__ == '__main__':
     main()
