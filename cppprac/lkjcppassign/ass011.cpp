@@ -24,25 +24,15 @@ class shapeset {
 	int maxshapes = 0;
 public:
 	shapeset(int n) : maxshapes(n) {
-		shapes = new shape*[n];
+		shared_ptr<shape*> shapes(new shape*[n]);
+		// shapes = new shape*[n]; <- not using smart pointer
 	}
 	shapeset(const shapeset& set) : shapes(set.shapes), numshapes(set.numshapes), maxshapes(set.maxshapes) {}
-	shapeset(shapeset&& set)  : shapes(set.shapes), numshapes(set.numshapes), maxshapes(set.maxshapes) {
-		set.shapes = nullptr;
-	}
-	~shapeset()  {
-		if (shapes != nullptr)
-			delete[] shapes;
-	}
 
-	shapeset& operator= (shapeset&& set)  {
-		if (this == &set) return *this;
-		delete[] shapes;
-		shapes = set.shapes;
-		set.shapes = nullptr;
-		return *this;
-	}
-
+	// ~shapeset()  {<- if not using smart pointer destructor must be needed!
+	// 	if (shapes != nullptr)
+	// 		delete[] shapes;
+	// }
 
 	shapeset& operator= (const shapeset& set) {
 		shapes = set.shapes;
@@ -52,7 +42,7 @@ public:
 	}
 
 	shapeset operator+(shape& s) {
-		(*shapes)[++numshapes] = s;
+		shapes[numshapes++] = &s;
 		return *this;
 	}
 
@@ -72,18 +62,12 @@ public:
 		type = static_cast<int>(shape::shapekind::point);
 	}
 	point(const point& p) : x(p.x), y(p.y) {}
-	point(point&& p)  : x(p.x), y(p.y) {}
 	point& operator= (const point& p) {
 		x = p.x;
 		y = p.y;
 		return *this;
 	}
-	point& operator=(point&& p) {
-		if (this == &p) return *this;
-		x = p.x;
-		y = p.y;
-		return *this;
-	}
+
 	double area() {
 		return 0.0;
 	}
@@ -106,14 +90,7 @@ public:
 		type = static_cast<int>(shape::shapekind::rectangle);
 	}
 	rectangle(const rectangle& r) : rightupper(r.rightupper), leftlower(r.leftlower) {}
-	rectangle(rectangle&& r) : rightupper(r.rightupper), leftlower(r.lftlower)) {}
 	rectangle& operator=(const rectangle & r) {
-		rightupper = r.rightupper;
-		leftlower = r.leftlower;
-		return *this;
-	}
-	rectangle& operator=(rectangle&& r) {
-		if (this == &r) return *this;
 		rightupper = r.rightupper;
 		leftlower = r.leftlower;
 		return *this;
@@ -122,7 +99,7 @@ public:
 		return (abs(rightupper.getx() - leftlower.getx()) * abs(rightupper.gety() - leftlower.gety()));
 	}
 	friend ostream& operator<<(ostream& os, const rectangle& r) {
-		os << r.gettype() << "(rectangle!) : " << r.rightupper << ", " << r.leftlower ;
+		os << r.gettype() << ", 2 means rectangle! : " << r.rightupper << ", " << r.leftlower ;
 		return os;
 	}
 
@@ -136,23 +113,18 @@ public:
 		type = static_cast<int>(shape::shapekind::circle);
 	}
 	circle(const circle& c) : center(c.center), radius(c.radius) {}
-	circle(circle&& c) : center(c.center), radius(c.radius) {}
+
 	circle& operator=(const circle& c) {
 		center = c.center;
 		radius = c.radius;
 		return *this;
 	}
-	circle& operator=(circle&& c) {
-		if (this == &c) return *this;
-		center = c.center;
-		radius = c.radius;
-		return *this;
-	}
+
 	double area() {
 		return radius * radius * M_PI;
 	}
 	friend ostream& operator<<(ostream& os, const circle& c) {
-		os << c.gettype() << "(circle!) : " << c.center << ", radius == " << c.radius ;
+		os << c.gettype() << ", 1 means circle! : the center of circle : " << c.center << ", radius == " << c.radius ;
 		return os;
 	}
 };
@@ -164,26 +136,20 @@ public:
 		type = static_cast<int>(shape::shapekind::triangle);
 	}
 	triangle(const triangle& t) : p1(t.p1), p2(t.p2), p3(t.p3) {}
-	triangle(triangle&& t) :  p1(t.p1), p2(t.p2), p3(t.p3) {}
+
 	triangle& operator=(const triangle& t) {
 		p1 = t.p1;
 		p2 = t.p2;
 		p3 = t.p3;
 		return *this;
 	}
-	triangle& operator=(triangle&& t) {
-		if (this == &t) return *this;
-		p1 = t.p1;
-		p2 = t.p2;
-		p3 = t.p3;
-		return *this;
-	}
-	bool isContaining(const class point& a);
+
+	bool isContaining(const point& a); // 얜 뭐하는 애지...?
 	double area() {
 		return 0.5 * abs((p1.getx() * p2.gety()) + (p2.getx() * p3.gety()) + (p3.getx() * p1.gety()) - (p1.getx() * p3.gety()) - (p3.getx() * p2.gety()) - (p2.getx() * p1.gety()));
 	}
 	friend ostream& operator<<(ostream& os, const triangle& t) {
-		os << t.gettype() << "(triangle!) : " << t.p1 << ", " << t.p2 << ", " << t.p3;
+		os << t.gettype() << ", 3 means triangle! : " << t.p1 << ", " << t.p2 << ", " << t.p3;
 		return os;
 	}
 };
@@ -201,6 +167,10 @@ int main(int argc, char const *argv[])
 	s = s + t;
 	s = s + c;
 	s = s + r;
+
+	cout << t << endl;
+	cout << c << endl;
+	cout << r << endl;
 
 	cout << t.area() << endl;
 	cout << c.area() << endl;
