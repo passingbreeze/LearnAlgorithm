@@ -20,18 +20,18 @@ public:
 
 class shapeset {
 	shape** shapes;
-	int numshapes = 0;
-	int maxshapes = 0;
+	int numshapes;
+	int maxshapes;
 public:
+	// shapeset() : numshapes(0), maxshapes(0) {}
 	shapeset(int n) : maxshapes(n) {
 		shared_ptr<shape*> shapes(new shape*[n]);
-		// shapes = new shape*[n]; <- not using smart pointer
+		// shapes = new shape*[n];
 	}
 	shapeset(const shapeset& set) : shapes(set.shapes), numshapes(set.numshapes), maxshapes(set.maxshapes) {}
 
-	// ~shapeset()  {<- if not using smart pointer destructor must be needed!
-	// 	if (shapes != nullptr)
-	// 		delete[] shapes;
+	// ~shapeset()  {
+	// 	cout << "destroy shapeset" << endl;
 	// }
 
 	shapeset& operator= (const shapeset& set) {
@@ -42,8 +42,11 @@ public:
 	}
 
 	shapeset operator+(shape& s) {
-		shapes[numshapes++] = &s;
-		return *this;
+		shapeset temp(*this);
+		if ((temp.numshapes) == (temp.maxshapes))
+			(temp.maxshapes) *= 2;
+		(temp.shapes)[(temp.numshapes)++] = &s;
+		return temp;
 	}
 
 	double totalarea() {
@@ -67,7 +70,6 @@ public:
 		y = p.y;
 		return *this;
 	}
-
 	double area() {
 		return 0.0;
 	}
@@ -83,7 +85,7 @@ public:
 	}
 };
 
-class rectangle: public shape {
+class rectangle: public shape { // destroy 순서 : rectangle -> point -> shape -> point -> shape -> shape
 	point rightupper, leftlower;
 public:
 	rectangle(const point& a, const point& b) : rightupper(a), leftlower(b) {
@@ -95,6 +97,7 @@ public:
 		leftlower = r.leftlower;
 		return *this;
 	}
+
 	double area() {
 		return (abs(rightupper.getx() - leftlower.getx()) * abs(rightupper.gety() - leftlower.gety()));
 	}
@@ -144,7 +147,6 @@ public:
 		return *this;
 	}
 
-	bool isContaining(const point& a); // 얜 뭐하는 애지...?
 	double area() {
 		return 0.5 * abs((p1.getx() * p2.gety()) + (p2.getx() * p3.gety()) + (p3.getx() * p1.gety()) - (p1.getx() * p3.gety()) - (p3.getx() * p2.gety()) - (p2.getx() * p1.gety()));
 	}
@@ -156,7 +158,10 @@ public:
 
 int main(int argc, char const *argv[])
 {
-	shapeset s(3);
+	shapeset s(0);
+	shapeset s1(3);
+	s = s1;
+
 	point p1(0, 1), p2(1, 2), p3(3, 2);
 	point p4(0, 0);
 
