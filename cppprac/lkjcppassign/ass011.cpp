@@ -20,19 +20,15 @@ public:
 
 class shapeset {
 	shape** shapes;
-	int numshapes;
-	int maxshapes;
+	int numshapes = 0;
+	int maxshapes = 0;
 public:
 	// shapeset() : numshapes(0), maxshapes(0) {}
 	shapeset(int n) : maxshapes(n) {
-		shared_ptr<shape*> shapes(new shape*[n]);
-		// shapes = new shape*[n];
+		// unique_ptr<shape*> shapes(new shape*[n]);
+		shapes = new shape*[n];
 	}
 	shapeset(const shapeset& set) : shapes(set.shapes), numshapes(set.numshapes), maxshapes(set.maxshapes) {}
-
-	// ~shapeset()  {
-	// 	cout << "destroy shapeset" << endl;
-	// }
 
 	shapeset& operator= (const shapeset& set) {
 		shapes = set.shapes;
@@ -43,8 +39,6 @@ public:
 
 	shapeset operator+(shape& s) {
 		shapeset temp(*this);
-		if ((temp.numshapes) == (temp.maxshapes))
-			(temp.maxshapes) *= 2;
 		(temp.shapes)[(temp.numshapes)++] = &s;
 		return temp;
 	}
@@ -168,6 +162,7 @@ int main(int argc, char const *argv[])
 	triangle t(p1, p2, p3);
 	circle c(p4, 10);
 	rectangle r(p1, p3);
+	triangle t1(p2, p3, p4);
 
 	s = s + t;
 	s = s + c;
