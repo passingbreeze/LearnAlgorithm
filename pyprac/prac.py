@@ -1,25 +1,21 @@
 #-*-coding:utf-8-*-
-import sys
-import datetime
-import random
+from math import *  # for using every names in math
+from sys import *
 
-class cal :
-    def __init__(self,lst):
-        self.a = lst[0]
-        self.b = lst[1]
-        self.c = lst[2]
-    def printcal(self):
-        print((self.a+self.b)%(self.c))
-        print((self.a%self.c + self.b%self.c) % (self.c))
-        print((self.a * self.b % self.c) % (self.c))
-        print((self.a % self.c * self.b % self.c) % (self.c))
+def gcd(a,b):
+    if a<0 and b<0:
+        return -1
+    if b==0:
+        return a
+    return gcd(b, a%b)
 
 def main():
-   a = [4,5,6]
-   b = a
-   b.pop()
-   print(a, b)
-
-
+    x = input()
+    y = input()
+    retv = gcd(x,y)
+    if retv >= 0 :
+        print(retv)
+    else:
+        print('cannot calculate')
 if __name__ == '__main__':
     main()
