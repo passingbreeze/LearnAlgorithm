@@ -1,62 +1,51 @@
-from typing import List
+from typing import *
 
-def array_to_tree(num_nodes: int, edges: List[List[int]]) -> List[List[int]]:
+def wires_to_graph(n: int, wires: List[List[int]]) -> List[List[int]]:
     """
-    Edges를 받아서 트리 형태로 변환하는 함수
+    주어진 간선 리스트를 기반으로 그래프를 인접 리스트 형태로 변환하는 함수
 
     Args:
-        num_nodes (int): 노드의 개수
-        edges (List[List[int]]): 간선 리스트, [[u, v], [v, w], ...]
+        n (int): 노드 갯수
+        wires (List[List[int]]): 간선 리스트, [[u, v], [v, w], ...]
 
     Returns:
-        List[List[int]]: 트리 형태로 변환된 리스트, [[], [], ...]
+        Dict[int, List[int]]: 인접 리스트
     """
-    tree = [[] for _ in range(num_nodes)]
-    for parent, child in edges:
-        tree[parent].append(child)
-    return tree
+    graph = [[] for _ in range(n + 1)]
+    for u, v in wires:
+        graph[u].append(v)
+        graph[v].append(u)
+    return graph
 
-def dfs(info: List[int], tree: List[List[int]], node: int, sheep: int, wolf: int, next_nodes: List[int]) -> int:
-    # 현재 방문한 노드에 있는 아이가 양인지 늑대인지 확인
-    is_wolf = info[node]
+def solution(n: int, wires: List[List[int]]) -> int:
+    answer = n
+    graph = wires_to_graph(n, wires)
 
-    # 늑대라면 늑대 수 증가, 양이라면 양 수 증가
-    if is_wolf:
-        wolf += 1
-    else:
-        sheep += 1
+    # 모든 간선을 제거한 상태에서 DFS를 통해 각 노드의 개수를 세는 방법
+    for v1, v2 in wires:
+        visited = [False] * (n + 1)
+        visited[v1] = True
+        stack = [v1]
+        cnt = 0
 
-    # 늑대 수가 양 수보다 많다면 종료
-    if wolf >= sheep:
-        return 0
+        # DFS 탐색
+        while stack:
+            node = stack.pop()
+            cnt += 1
+            for neighbor in graph[node]:
+                if not visited[neighbor] and neighbor != v2:
+                    visited[neighbor] = True
+                    stack.append(neighbor)
 
-    # 최대 양 수를 초기화
-    max_sheep = sheep
+        # 각 간선을 제거한 상태에서의 노드 개수를 세고, 그 차이를 계산
+        answer = min(answer, abs(cnt - (n - cnt)))
 
-    # 다음 방문할 노드 후보를 설정
-    next_candidates = next_nodes.copy()
-    for child in tree[node]:
-        next_candidates.append(child)
-
-    # 현재 노드가 다음 방문 후보에 있다면 제거
-    if node in next_candidates:
-        next_candidates.remove(node)
-
-    # 다음 노드 후보를 순회하며 DFS 탐색
-    for next_node in next_candidates:
-        temp_next_nodes = next_candidates.copy()
-        temp_next_nodes.remove(next_node)
-        max_sheep = max(max_sheep, dfs(info, tree, next_node, sheep, wolf, temp_next_nodes))
-
-    return max_sheep
-
-
-def solution(info, edges):
-    input_tree = array_to_tree(len(info), edges)
-    return dfs(info, input_tree, 0, 0, 0, [])
+    return answer
 
 if __name__ == '__main__':
-    input1_info, input1_edges = [0, 0, 1, 1, 1, 0, 1, 0, 1, 0, 1, 1], [[0, 1], [1, 2], [1, 4], [0, 8], [8, 7], [9, 10], [9, 11], [4, 3], [6, 5], [4, 6], [8, 9]]
-    print(solution(input1_info, input1_edges) == 5)
-    input2_info, input2_edges = [0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0], [[0, 1], [0, 2], [1, 3], [1, 4], [2, 5], [2, 6], [3, 7], [4, 8], [6, 9], [9, 10]]
-    print(solution(input1_info, input1_edges) == 5)
+    input1, input1_wires= 9, [[1, 3], [2, 3], [3, 4], [4, 5], [4, 6], [4, 7], [7, 8], [7, 9]]
+    print(solution(input1, input1_wires) == 3)
+    input2, input2_wires = 4, [[1, 2], [2, 3], [3, 4]]
+    print(solution(input2, input2_wires) == 0)
+    input3, input3_wires = 7, [[1, 2], [2, 7], [3, 7], [3, 4], [4, 5], [6, 7]]
+    print(solution(input3, input3_wires) == 1)
