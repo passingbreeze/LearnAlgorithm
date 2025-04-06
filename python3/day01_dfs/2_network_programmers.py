@@ -1,4 +1,4 @@
-def solutions(n, computers):
+def solution(n, computers):
     """
         DFS를 활용하여 네트워크 개수를 찾는 함수
 
@@ -31,6 +31,6 @@ def solutions(n, computers):
 
 if __name__ == '__main__':
     input1_nodes, input1_computers = 3, [[1, 1, 0], [1, 1, 0], [0, 0, 1]]
-    print(solutions(input1_nodes, input1_computers) == 2)
+    print(solution(input1_nodes, input1_computers) == 2)
     input2_nodes, input2_computers = 3, [[1, 1, 0], [1, 1, 1], [0, 1, 1]]
-    print(solutions(input2_nodes, input2_computers) == 1)
+    print(solution(input2_nodes, input2_computers) == 1)
