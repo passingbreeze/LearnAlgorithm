@@ -17,21 +17,6 @@ def array_to_tree(num_nodes: int, edges: List[List[int]]) -> List[List[int]]:
     return tree
 
 def dfs(info: List[int], tree: List[List[int]], node: int, sheep: int, wolf: int, next_nodes: List[int]) -> int:
-    """
-    DFS 탐색을 통해 최대 양 수를 계산하는 함수
-
-    Args:
-        info (List[int]): 각 노드에 있는 아이가 양인지 늑대인지 정보
-        tree (List[List[int]]): 트리 형태로 변환된 리스트
-        node (int): 현재 노드
-        sheep (int): 현재까지 양의 수
-        wolf (int): 현재까지 늑대의 수
-        next_nodes (List[int]): 다음 방문할 노드 후보 리스트
-
-    Returns:
-        int: 최대 양 수
-
-    """
     # 현재 방문한 노드에 있는 아이가 양인지 늑대인지 확인
     is_wolf = info[node]
 
