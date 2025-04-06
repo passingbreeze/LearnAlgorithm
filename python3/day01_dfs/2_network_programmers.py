@@ -1,4 +1,6 @@
-def solution(n, computers):
+from typing import *
+
+def solution(n: int, computers: List[List[int]]) -> int:
     """
         DFS를 활용하여 네트워크 개수를 찾는 함수
 
