@@ -9,5 +9,4 @@ _.python.venv = { path = ".venv", create = true }
 python.uv_venv_auto = true
 
 [tasks.default]
-run_windows = 'uv run'
-sources = ['D:\codesPractice\LearnAlgorithm\python3\**']
+run_windows = 'uv run .\*'

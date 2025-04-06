@@ -66,7 +66,7 @@ def dfs(info: List[int], tree: List[List[int]], node: int, sheep: int, wolf: int
     return max_sheep
 
 
-def solution(info, edges):
+def solution(info: List[int], edges: List[List[int]]) -> int:
     input_tree = array_to_tree(len(info), edges)
     return dfs(info, input_tree, 0, 0, 0, [])
 
