@@ -40,6 +40,15 @@ def bfs(maps: List[List[int]], start: tuple, visited: List[List[bool]]) -> int:
 
 
 def solution(maps: List[List[int]]) -> int:
+    """
+    BFS를 사용하여 최단 경로를 찾는 함수
+
+    Args:
+        maps (List[List[int]]): 맵 정보
+
+    Returns:
+        int: 최단 거리
+    """
     visited = [[False] * len(maps[0]) for _ in range(len(maps))]
     answer = bfs(maps, (0, 0), visited)
     return answer

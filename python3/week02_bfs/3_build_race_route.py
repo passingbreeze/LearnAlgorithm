@@ -2,6 +2,16 @@ from typing import *
 from collections import deque
 
 def bfs(board: List[List[int]], visited: List[List[List[float]]]) -> int:
+    """
+    BFS 탐색을 통해 경주로 건설 최소 비용을 계산하는 함수
+
+    Args:
+        board (List[List[int]]): 경주로를 건설할 지형 정보 (0: 빈칸, 1: 벽)
+        visited (List[List[List[float]]]): 방문 여부 리스트
+
+    Returns:
+        int: 경주로 건설 최소 비용
+    """
     board_length = len(board)
 
     # 방향 정의 (상, 우, 하, 좌)
