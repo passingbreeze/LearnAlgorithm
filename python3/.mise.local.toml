@@ -1,12 +1,22 @@
 [tools]
-python = ['3.8']
+python = ['3.8', '3.11', '3.13']
 uv = 'latest'
 
 [env]
 _.python.venv = { path = ".venv", create = true }
 
+[tasks.leetcode-install]
+description = "Install dependencies"
+alias = "li"
+run = "uv pip --managed-python install -r requirements.txt"
+
 [settings]
 python.uv_venv_auto = true
 
-[tasks.default]
-run = 'uv run .\*'
+[tasks.leetcode]
+alias = "lc"
+run = 'uv run -p python3.11'
+
+[tasks.programmers]
+alias = "pg"
+run = 'uv run -p python3.8'
